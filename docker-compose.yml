@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  backend:
+    image:
+  fs:
+    image: postgres
+    container_name: fs
+    restart: always
+    env_file:
+      - "env"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
