@@ -20,7 +20,7 @@
 
 .terminal__prompt__command {
     display: flex;
-    align-items: left;
+    align-items: center;
     background-color: transparent;
 }
 
@@ -29,6 +29,8 @@
     display: flex;
     align-items: center;
     background-color: transparent;
+    margin: 0px;
+    padding: 0px;
 }
 
 .terminal__prompt__block {

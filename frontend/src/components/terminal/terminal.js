@@ -63,6 +63,12 @@ export const Terminal = () => {
             </div>
         )
 
+
+        function handleOnSubmit(event) {
+            console.log("Submitted!")
+        }
+
+
         function handleKeyDown(event) {
             if (event.key !== "Enter")
                 return;
