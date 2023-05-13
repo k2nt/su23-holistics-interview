@@ -1,9 +1,11 @@
 import './App.css';
+import { Terminal } from './components/terminal/terminal';
+
 
 function App() {
   return (
     <div className="App">
-      <h3>Hello World</h3>
+      <Terminal />
     </div>
   );
 }
