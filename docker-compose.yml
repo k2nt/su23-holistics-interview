@@ -1,6 +1,19 @@
 version: '3.9'
 
 services:
+  frontend:
+    build:
+      context: frontend
+      dockerfile: frontend.Dockerfile
+    image: frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - frontend/.env
+    networks:
+      - service_network
+
   fs:
     image: postgres
     container_name: fs
@@ -11,3 +24,8 @@ services:
       - ./.pgdata:/var/lib/postgresql/data
     ports:
       - "5433:5432"
+    networks:
+      - service_network
+
+networks:
+  service_network:
