@@ -64,11 +64,6 @@ export const Terminal = () => {
         )
 
 
-        function handleOnSubmit(event) {
-            console.log("Submitted!")
-        }
-
-
         function handleKeyDown(event) {
             if (event.key !== "Enter")
                 return;
@@ -81,7 +76,6 @@ export const Terminal = () => {
             }
 
             setTerminalHistories([...terminalHistories, newHistory])
-            event.target.value = ""
         }
     }
 
