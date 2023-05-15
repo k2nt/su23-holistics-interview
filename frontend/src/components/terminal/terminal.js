@@ -76,6 +76,8 @@ export const Terminal = () => {
             }
 
             setTerminalHistories([...terminalHistories, newHistory])
+
+            
         }
     }
 
