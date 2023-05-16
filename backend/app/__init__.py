@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-import app.service_logging as sv_logging
+import app.lib.service_logging as sv_logging
 
 
 def configure():
