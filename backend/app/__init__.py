@@ -20,6 +20,8 @@ def create_app(config=None):
     # Initialize database
 
     # Register blueprints
+    from app.fs import fs
+    app.register_blueprint(fs)
 
     @app.route("/")
     def test_alive():
