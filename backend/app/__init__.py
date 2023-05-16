@@ -37,6 +37,12 @@ def create_app(config=None):
     from app.extensions import db
     db.init_app(app)
 
+    sv_logging.info("Preparing database ...")
+
+    # Create tables if not exist
+    from app.models.fs import init as init_models_fs
+    init_models_fs(app)
+
     sv_logging.info("Registering services ... ")
 
     # Register blueprints

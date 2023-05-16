@@ -19,7 +19,7 @@ SECRET_KEY = "dont_let_anyone_know_about_me"
 if "SECRET_KEY" in os.environ:
     SECRET_KEY = os.environ["SECRET_KEY"]
 
-SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(basedir, 'app.db')}"
+SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(basedir, '..', 'app.db')}"
 if "DATABASE_URI" in os.environ:
     DATABASE_URI = os.environ["DATABASE_URI"]
 
