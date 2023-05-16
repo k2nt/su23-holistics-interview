@@ -2,11 +2,25 @@ import os
 
 from flask import Flask
 
+import app.service_logging as sv_logging
+
+
+def configure():
+    """Configure infrastructures
+    """
+    # Set up logging module
+    sv_logging.configure("app", is_debug=False)
+
 
 def create_app(config=None):
     """Create and configure Flask application
     """
+    configure()
+
+    sv_logging.info("Starting application ...")
     app = Flask("app")
+
+    sv_logging.info("Configuring application ...")
 
     # Default application settings
     app.config.from_mapping(
@@ -17,9 +31,13 @@ def create_app(config=None):
     # Load config from config.py if exists
     app.config.from_pyfile("config.py", silent=False)
 
+    sv_logging.info("Establishing database connection ...")
+
     # Initialize database
     from app.extensions import db
     db.init_app(app)
+
+    sv_logging.info("Registering services ... ")
 
     # Register blueprints
     from app.fs import fs
@@ -28,5 +46,8 @@ def create_app(config=None):
     @app.route("/")
     def test_alive():
         return "<p>is_alive</p>"
+
+    import app.config as config
+    sv_logging.info(f"Listening at {config.FLASK_RUN_HOST}:{config.FLASK_RUN_PORT}")
 
     return app
