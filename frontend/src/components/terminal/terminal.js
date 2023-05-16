@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './terminal.css';
-import axios from "axios"
 import parseCommand from './cli-parser';
+import { createFile, getFileContent } from './api';
 
 
 
@@ -39,7 +39,7 @@ export const Terminal = () => {
                                 <input
                                     type="text"
                                     key="command"
-                                    value={data.response}
+                                    value={data.response.toString()}
                                     disabled={true}
                                 />
                             </div>
@@ -72,17 +72,52 @@ export const Terminal = () => {
                 return;
             
             let command = event.target.value
+            let commandParsed = []
             let response = ""
 
             try {
-                const parsedCommand = parseCommand(command)
-                response = parsedCommand
+                commandParsed = parseCommand(command)
+                response = commandParsed
             } catch (e) {
                 response = e.message
             } 
 
-            console.log("command", command)
+            // Debug
+            // DELETE ME
+            console.log("command", commandParsed.cmd)
             console.log("response", response)
+
+            let promise = ""
+            switch (commandParsed.cmd) {
+                case "cr":
+                    promise = createFile(commandParsed.path, commandParsed.forceCreate, commandParsed.data)
+                    promise
+                        .then(resp => {
+                            console.log(resp)
+                        }).catch(e => {
+                            console.log(e)
+                        })
+                    break
+
+                case "cat":
+                    promise = getFileContent(parseCommand.path)
+                    break
+                case "ls":
+                    break;
+                case "mv":
+                    break;
+                case "rm":
+                    break;
+                case "find":
+                    break;
+                case "up":
+                    break;
+                default:
+                    break;
+            }
+
+
+
 
             const newHistory = {
                 path: workDir,
@@ -91,9 +126,7 @@ export const Terminal = () => {
                 idx: terminalHistories.length
             }
 
-            setTerminalHistories([...terminalHistories, newHistory])
-
-            
+            setTerminalHistories([...terminalHistories, newHistory])            
         }
     }
 

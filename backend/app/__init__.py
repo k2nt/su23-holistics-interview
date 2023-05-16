@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 
 import app.lib.service_logging as sv_logging
 
@@ -33,6 +34,10 @@ def create_app(config=None):
 
     sv_logging.info("Establishing database connection ...")
 
+    # Enable CORS
+    from app.extensions import cors
+    cors.init_app(app)
+
     # Initialize database
     from app.extensions import db
     db.init_app(app)
@@ -43,7 +48,7 @@ def create_app(config=None):
     from app.models.fs import init as init_models_fs
     init_models_fs(app)
 
-    sv_logging.info("Registering services ... ")
+    sv_logging.info("Registering services ...")
 
     # Register blueprints
     from app.fs import fs

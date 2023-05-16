@@ -17,6 +17,20 @@ run: ## Start application
 .PHONY: run
 
 
+run-local-backend: ## Start backend locally
+	cd backend && flask run
+.PHONY: run-local-backend
+
+
+run-local-frontend: ## Start frontend locally
+	cd frontend && yarn start
+.PHONY: run-local-frontend
+
+
+run-local: run-local-backend run-local-frontend  ## Start application locally
+.PHONY: run-local
+
+
 run-build:  ## Start and rebuild application
 	docker-compose up --detach --remove-orphans --build
 .PHONY: run-build

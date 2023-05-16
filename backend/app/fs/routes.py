@@ -1,7 +1,9 @@
 from flask import request
 from flask import jsonify
-from flask import make_response
 from flask import Blueprint
+from flask import make_response
+
+from http import HTTPStatus
 
 
 fs = Blueprint("fs", __name__)
@@ -9,7 +11,10 @@ fs = Blueprint("fs", __name__)
 
 @fs.route("/cr", methods=["POST"])
 def create_file():
-    return "<p>cr</p>"
+    resp = make_response()
+    resp.status_code = HTTPStatus.CREATED
+    resp.headers['Content-Type'] = 'application/json'
+    return resp
 
 
 @fs.route("/cat", methods=["GET"])

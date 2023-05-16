@@ -13,6 +13,6 @@ SHELL := /bin/zsh
 .DEFAULT_GOAL := help
 
 
-run:  # Run backend service locally
+run-local:  # Run backend service locally
 	flask run
-.PHONY: run
+.PHONY: run-local
