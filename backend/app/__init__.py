@@ -18,6 +18,8 @@ def create_app(config=None):
     app.config.from_pyfile("config.py", silent=False)
 
     # Initialize database
+    from app.extensions import db
+    db.init_app(app)
 
     # Register blueprints
     from app.fs import fs
