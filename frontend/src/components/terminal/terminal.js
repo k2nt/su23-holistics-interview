@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import './terminal.css';
+import axios from "axios"
+import parseCommand from './cli-parser';
+
 
 
 export const Terminal = () => {
@@ -67,11 +70,24 @@ export const Terminal = () => {
         function handleKeyDown(event) {
             if (event.key !== "Enter")
                 return;
+            
+            let command = event.target.value
+            let response = ""
+
+            try {
+                const parsedCommand = parseCommand(command)
+                response = parsedCommand
+            } catch (e) {
+                response = e.message
+            } 
+
+            console.log("command", command)
+            console.log("response", response)
 
             const newHistory = {
                 path: workDir,
-                command: event.target.value,
-                response: event.target.value,
+                command: command,
+                response: response,
                 idx: terminalHistories.length
             }
 
