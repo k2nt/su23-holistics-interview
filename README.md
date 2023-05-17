@@ -67,7 +67,7 @@ The database is SQLite for being relational, simple, and easy to setup.
 
 The frontend is responsible for client CLI interactions. The CLI commands are passed through a lexer to be parsed and handed over to the backend to process.
 
-The backend manages handles client requests and manages database interactions.
+The backend manages handles client requests and manages database interactions. Transactions to the database are designed to be atomic to ensure data integrity.
 
 The database is not a separate service but rather embedded into the backend service. This is because I wanted to make develop the file system in time for submission.
 
