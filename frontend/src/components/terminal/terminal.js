@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import './terminal.css';
 import parseCommand from './cli-parser';
-import { createFile, getFileContent } from './api';
+import { createFile, findFile, getFileContent, listSubFiles, moveFile, removeFile, updateFile } from './api';
+import { HttpStatusCode } from 'axios';
 
 
 
 export const Terminal = () => {
     const [terminalHistories, setTerminalHistories] = useState([])
-    const [workDir, setWorkDir] = useState("Documents")
+    const [workDir, setWorkDir] = useState("~")
 
 
     return(
@@ -67,7 +68,7 @@ export const Terminal = () => {
         )
 
 
-        function handleKeyDown(event) {
+        async function handleKeyDown(event) {
             if (event.key !== "Enter")
                 return;
             
@@ -77,56 +78,46 @@ export const Terminal = () => {
 
             try {
                 commandParsed = parseCommand(command)
-                response = commandParsed
             } catch (e) {
-                response = e.message
+                response = command === '' ? '' : e.message
             } 
 
-            // Debug
-            // DELETE ME
-            console.log("command", commandParsed.cmd)
-            console.log("response", response)
+            console.log("commandParsed", commandParsed)
+            
+            if (response === "") {
+                const apiHandler = {
+                    cr: createFile,
+                    ls: listSubFiles,
+                    cat: getFileContent,
+                    mv: moveFile,
+                    rm: removeFile,
+                    find: findFile,
+                    up: updateFile,
+                }
 
-            let promise = ""
-            switch (commandParsed.cmd) {
-                case "cr":
-                    promise = createFile(commandParsed.path, commandParsed.forceCreate, commandParsed.data)
-                    promise
+                if (apiHandler[commandParsed.cmd] !== undefined) {
+                    const promise = apiHandler[commandParsed.cmd](commandParsed)
+                    response = await promise
                         .then(resp => {
-                            console.log(resp)
-                        }).catch(e => {
-                            console.log(e)
+                            if (resp.status !== HttpStatusCode.Created) {
+                                return `error: HTTP ${resp.status}`
+                            } else {
+                                return resp.data
+                            }
+                        }).catch(error => {
+                            console.log(error)
+                            return `error: ${error.message}`
                         })
-                    break
-
-                case "cat":
-                    promise = getFileContent(parseCommand.path)
-                    break
-                case "ls":
-                    break;
-                case "mv":
-                    break;
-                case "rm":
-                    break;
-                case "find":
-                    break;
-                case "up":
-                    break;
-                default:
-                    break;
+                }
             }
-
-
-
-
+            
             const newHistory = {
                 path: workDir,
                 command: command,
                 response: response,
                 idx: terminalHistories.length
             }
-
-            setTerminalHistories([...terminalHistories, newHistory])            
+            setTerminalHistories([...terminalHistories, newHistory])     
         }
     }
 

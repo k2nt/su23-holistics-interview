@@ -1,5 +1,5 @@
 export default function parseCommand(command) {
-    const tokens = command.split(" ")
+    const tokens = command.split(" ").filter(tok => tok !== '')
 
     if (tokens.length === 0) 
         throw Error("error: empty command")
@@ -17,10 +17,10 @@ export default function parseCommand(command) {
             const path = forceCreate ? tokens[2] : tokens[1]
             
             let fileData = ""
-            if (!forceCreate && tokens.length === 3)
-                fileData = tokens[2]
-            if (forceCreate && tokens.length === 4)
-                fileData = tokens[3]
+            if (!forceCreate && tokens.length >= 3)
+                fileData = tokens.slice(2).join(" ")
+            if (forceCreate && tokens.length >= 4)
+                fileData = tokens.slice(3).join(" ")
 
             return {cmd: "cr", forceCreate: forceCreate, path: path, data: fileData}
 

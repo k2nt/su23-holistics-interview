@@ -1,7 +1,7 @@
 .terminal {
     /* width: 100%; */
-    height: fit-content;
-    min-height: 500px;
+    height: 100vh;
+    /* min-height: 500px; */
     overflow-y: auto;
     background-color: #171717;
     color: #C4C4C4;
