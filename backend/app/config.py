@@ -11,6 +11,11 @@ load_dotenv("../.env")
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
+IS_RESET_DB = True
+if "IS_RESET_DB" in os.environ:
+    IS_RESET_DB = bool(os.environ["IS_RESET_DB"])
+
+
 # Below are definitions for Flask env vars
 # Reference for Flask env vars: https://flask.palletsprojects.com/en/1.1.x/config/
 
