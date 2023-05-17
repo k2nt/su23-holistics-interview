@@ -18,15 +18,17 @@ prepared that contains all neccessary build tools.
 
 ### Prerequisites
 
-For the backend, make sure Python is at least version 3.9.
+For the backend, make sure Python is at least version 3.9. To install Python dependencies, type `pip3 install -r requirements.txt` in the `backend` folder.
 
-For the frontend, make sure Node.js and Yarn is at the latest stable version.
+For the frontend, make sure Node.js and Yarn is at the latest stable version. To install Javascript dependencies, type `yarn install` in the `frontend` folder.
 
 Optionally, install Docker to run the application in a containerized environment.
 
 ### Deploy locally
 
 To start the frontend service, change the work directory into the `frontend` folder and type `yarn start`
+
+To start the backend service, change the work directory into the `backend` folder and type `make run-local`
 
 ### Deploy via Docker
 
