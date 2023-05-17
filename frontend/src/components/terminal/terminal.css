@@ -27,7 +27,9 @@
 
 .terminal__prompt__response {
     display: flex;
-    align-items: center;
+    align-items: left;
+    text-align: left;
+    height: fit-content;
     background-color: transparent;
     margin: 0px;
     padding: 0px;

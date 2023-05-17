@@ -7,9 +7,7 @@ const ROOT_BACKEND_URL = `http://${BACKEND_HOST}:${BACKEND_PORT}`
 const FS_URL_PREFIX = "fs"
 
 
-
 export async function createFile({path, forceCreate=false, data=""}) {
-    console.log(path)
     return await axios.post(`${ROOT_BACKEND_URL}/${FS_URL_PREFIX}/cr`, {
         data: {
             path: path,
@@ -25,23 +23,22 @@ export async function createFile({path, forceCreate=false, data=""}) {
 }
 
 
-export async function getFileContent(path) {
-    return await axios.post(`${ROOT_BACKEND_URL}/${FS_URL_PREFIX}/cat`, {
-        data: {
+export async function getFileContent({path}) {
+    return await axios.get(`${ROOT_BACKEND_URL}/${FS_URL_PREFIX}/cat`, {
+        params: {
             path: path
-        },
-        config: {
-            headers: {
-                'Content-Type': 'application/json'
-            }
         }
     })
 }
 
 
 export async function listSubFiles({path}) {
+    return await axios.get(`${ROOT_BACKEND_URL}/${FS_URL_PREFIX}/ls`, {
+        params: {
+            path: path
+        }
+    })
 }
-
 
 
 export async function moveFile({source, dest}) {

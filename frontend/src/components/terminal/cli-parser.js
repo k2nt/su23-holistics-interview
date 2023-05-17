@@ -30,9 +30,7 @@ export default function parseCommand(command) {
             return {cmd: "cat", path: tokens[1]}
 
         case "ls":
-            if (tokens.length < 2)
-                throw Error("usecase: ls FOLDER_PATH")
-            return {cmd: "ls", path: tokens[1]}
+            return {cmd: "ls", path: tokens.length === 1 ? "" : tokens[1]}
 
         case "mv":
             if (tokens.length < 3)
@@ -52,7 +50,7 @@ export default function parseCommand(command) {
         case "up":
             if (tokens.length < 3)
                 throw Error("usecase: up PATH NAME [DATA]")
-            fileData = (tokens.length === 3) ? "" : tokens[3]
+            fileData = (tokens.length >= 3) ? "" : tokens.slice(3)
             return {cmd: "up", path: tokens[1], name: tokens[2], data: fileData}
 
         default:

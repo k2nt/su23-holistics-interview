@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 from flask import request
 from flask import Blueprint
+from flask import jsonify
 from flask import make_response
 
 from app.fs import usecase as uc
@@ -14,6 +15,7 @@ fs = Blueprint("fs", __name__)
 @fs.route("/cr", methods=["POST"])
 def create_file():
     req_data = request.get_json()['data']
+    print(req_data)
     try:
         uc.create_file(
             path=req_data["path"],
@@ -24,20 +26,38 @@ def create_file():
         resp.status_code = HTTPStatus.CREATED
         return resp
     except Exception as e:
-        sv_logging.debug(e)
-        resp = make_response()
-        resp.status_code = HTTPStatus.BAD_REQUEST
+        print(e)
+        resp = make_response(jsonify({"msg": str(e)}), HTTPStatus.BAD_REQUEST)
         return resp
 
 
 @fs.route("/cat", methods=["GET"])
 def get_file_content():
-    return f"<p>cat</p>"
+    path = request.args.get("path")
+    print(path)
+    try:
+        content = uc.get_file_content(path)
+        resp = make_response(jsonify({"data": content}), HTTPStatus.OK)
+        resp.headers['Content-Type'] = "application/json"
+        return resp
+    except Exception as e:
+        print(e)
+        resp = make_response(jsonify({"msg": str(e)}), HTTPStatus.BAD_REQUEST)
+        return resp
 
 
 @fs.route("/ls", methods=["GET"])
 def list_subfiles():
-    return f"<p>ls</p>"
+    path = request.args.get("path")
+    try:
+        li = uc.list_subfiles(path)
+        resp = make_response(jsonify({"data": li}), HTTPStatus.OK)
+        resp.headers['Content-Type'] = "application/json"
+        return resp
+    except Exception as e:
+        print(e)
+        resp = make_response(jsonify({"msg": str(e)}), HTTPStatus.BAD_REQUEST)
+        return resp
 
 
 @fs.route("/mv", methods=["POST"])

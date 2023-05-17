@@ -33,23 +33,40 @@ export const Terminal = () => {
                         />
                     </div>
                 </div>
-                {
-                    data.response !== "" ?
-                        <div className="terminal__prompt__response">
-                            <div className="terminal__prompt__input">
-                                <input
-                                    type="text"
-                                    key="command"
-                                    value={data.response.toString()}
-                                    disabled={true}
-                                />
-                            </div>
-                        </div>
-                    : 
-                        <></>
-                }
+                <Response response={data.response}/>
             </div>
         )
+
+
+        function Response(response) {
+            response = response.response
+            
+            if (response === null) {
+                return(<></>)
+            }
+
+            if (response.constructor === Array) {
+                response = response.map((x, id) => <li key={id}>{JSON.stringify(x)}</li>)
+                return(
+                    <div className="terminal__prompt__response">
+                        <ul>{response}</ul>
+                    </div>
+                )
+            } else if (response.constructor === Object) {
+                response = JSON.stringify(response)
+                return(
+                    <div className="terminal__prompt__response">
+                        {response}
+                    </div>
+                )
+            }
+
+            return(
+                <div className="terminal__prompt__response">
+                    {response}
+                </div>
+            )
+        }
     }
 
 
@@ -86,23 +103,45 @@ export const Terminal = () => {
             
             if (response === "") {
                 const apiHandler = {
-                    cr: createFile,
-                    ls: listSubFiles,
-                    cat: getFileContent,
-                    mv: moveFile,
-                    rm: removeFile,
-                    find: findFile,
-                    up: updateFile,
+                    cr: {
+                        fn: createFile,
+                        method: "POST"
+                    },
+                    ls: {
+                        fn: listSubFiles,
+                        method: "GET"
+                    },
+                    cat: {
+                        fn: getFileContent,
+                        method: "GET"
+                    },
+                    mv: {
+                        fn: moveFile,
+                        method: "POST"
+                    },
+                    rm: {
+                        fn: removeFile,
+                        method: "DELETE"
+                    }, 
+                    find: {
+                        fn: findFile,
+                        method: "GET"
+                    },
+                    up: {
+                        fn: updateFile,
+                        method: "UPDATE"
+                    }
                 }
 
-                if (apiHandler[commandParsed.cmd] !== undefined) {
-                    const promise = apiHandler[commandParsed.cmd](commandParsed)
+                const cmd = commandParsed.cmd
+                if (apiHandler[cmd] !== undefined) {
+                    const promise = apiHandler[cmd].fn(commandParsed)
                     response = await promise
                         .then(resp => {
-                            if (resp.status !== HttpStatusCode.Created) {
+                            if (resp.status < 200 || resp.status > 299) {
                                 return `error: HTTP ${resp.status}`
                             } else {
-                                return resp.data
+                                return apiHandler[cmd].method === "GET" ? resp.data['data'] : ""
                             }
                         }).catch(error => {
                             console.log(error)
@@ -110,7 +149,10 @@ export const Terminal = () => {
                         })
                 }
             }
-            
+
+
+            console.log("response", response.constructor === Array)
+
             const newHistory = {
                 path: workDir,
                 command: command,
