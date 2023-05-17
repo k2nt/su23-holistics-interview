@@ -42,7 +42,7 @@ and 8000 respectively and can be accessed via localhost.
 
 ### File System
 
- There are two types of files, data files and folders. Data file can hold data whereas folders are simply structures in which other folders can files can reside. Each file has a unique file ID (*fid*) as well as a unique absolute path name. The root folder is a special system folder that contains all other files and folders.
+ There are two types of files, data files and folders. Data file can hold data whereas folders are simply structures in which other folders can files can reside. Each file has a unique file ID (*fid*) as well as a unique absolute path name. The root folder is a special system folder that contains all other files and folders. Under my design, a file and a folder can share the same name because they are of different types.
 
 The file system is managed by 3 relational tables, which are *FileSystem*,
  *MetaData*, *Content*. The *FileSystem* table stores the tree structure of the file system through the parent relationship. Every folder, except for the root folder, in a file structure must have a single parent. The *MetaData* table stores metadata on files that includes the creation date, file size, pathname, and whether it is a folder or a data file. The *Content* table stores the file content for data files. Note that only files that are data files can appear in the *Contents* table.
@@ -63,13 +63,26 @@ The database is SQLite for being relational, simple, and easy to setup.
 
  Docker is used to containerize and deploy the entire web application. Furthermore, I can deploy my Dockerized app on a cloud service like `fly.io` to publish my service.
 
- ## Architecture
+ ### Architecture
 
 The frontend is responsible for client CLI interactions. The CLI commands are passed through a lexer to be parsed and handed over to the backend to process.
 
 The backend manages handles client requests and manages database interactions. Transactions to the database are designed to be atomic to ensure data integrity.
 
 The database is not a separate service but rather embedded into the backend service. This is because I wanted to make develop the file system in time for submission.
+
+### CLI commands I haven't implemented
+
+I want to discuss how I would implement the APIs that I did not explicitly implement in this project.
+
+1. `mv`: Moving a file is simply changing its parent directory. This also works for folders, since moving a file does not affect the underlying subtree. The tricky operation is to update the file sizes. I need to iteratively deduct the file sizes from previous parent directories and add the to new ones. This can be done by querying the file system structure from the *FileSystem* table to climb up the file structure.
+1. `rm`: If the object to be removed is a data file, simply remove the rows associated with the files from the tables. If instead it is a folder, we must also recursively remove all subfiles and subfolders. This can be done by querying the file system structure from the *FileSystem* table to traverse downwards to find all children subfiles and subfolders belonging to a folder.
+1. `find`: This can be done by querying the file system structure from the *FileSystem* table to find files and folders directly below a folder. From there we can compare and find those that have the specified name prefix.
+1. `up`: This is simply making update calls to the *MetaData* and *Content* table. However, I need to check whether the updated file name conflicts with an existing file.
+
+### Deploying to cloud platform
+
+I did not deploy my application on `fly.io` as specified. With that said, `fly.io` provides a service to deploy a Dockerized app to their cloud platform. I have Dockerized my frontend and backend services which I can then use to deploy to `fly.io`.
 
 ## Future improvements
 
