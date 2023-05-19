@@ -1,4 +1,4 @@
-from flask import Flask
+from sqlalchemy import CheckConstraint
 
 from datetime import datetime
 from app.extensions import db
